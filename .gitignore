@@ -1,0 +1,13 @@
+# Claude Code tool state (worktree checkouts, plugin databases); session machinery, not project files.
+.claude/
+# Logs written by the Playwright MCP browser tool while checking pages; session noise, not project files.
+.playwright-mcp/
+# Scratch harnesses (underscore prefix) stay local by convention.
+_*
+!data/raw/*/_download_log.tsv
+# Company reports, policy pages and KBA press releases: fetched by scripts/fetch-sources.js and checked
+# against data/sources_fetch.tsv; redistribution is not clearly allowed (reports, BAFA page) or the file
+# holds a third party's contact details (KBA press releases), so they stay out of git.
+data/cache/
+# npm packages installed only for the browser check (playwright); not part of the project.
+node_modules/

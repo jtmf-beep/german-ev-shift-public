@@ -1,0 +1,44 @@
+label	pattern	formula
+Titel Jahr	^# Wer hat Deutschlands E-Auto-Boom (\d{4}) für sich genutzt\?	lastMonth().slice(0,4)
+Zeile Autor	Joshua Musick, ESCP Business School · 9\. Oktober 2026 · mit KI-Programmierassistent erstellt · übersetzt aus memo\.md
+Lead: Marktwachstum	Elektroautomarkt wuchs von Januar bis September \d{4} um (\d+) %	growth('MARKET', lastMonth().slice(0,4))
+Lead: Jahr	wuchs von Januar bis September (\d{4}) um	lastMonth().slice(5) === '09' ? lastMonth().slice(0,4) : 'data no longer ends in September'
+Lead: größter Verlierer	doch der Anteil des (VW-Konzerns) fiel	({'VW GROUP':'VW-Konzern','CHINESE BRANDS':'chinesische Marken','STELLANTIS':'Stellantis','TESLA':'Tesla','RENAULT GROUP':'Renault-Gruppe','MERCEDES-BENZ':'Mercedes-Benz'})[units('lose',1)[0]] + 's'
+Lead: VW-Konzern Vorjahr	Anteil des VW-Konzerns fiel von ([\d.]+(?:,\d+)?) % auf	csh('VW GROUP', String(+lastMonth().slice(0,4)-1))
+Lead: VW-Konzern dieses Jahr	fiel von [\d,]+ % auf ([\d.]+(?:,\d+)?) %, während	csh('VW GROUP', lastMonth().slice(0,4))
+Lead: drei größte Gewinner	während (Tesla, chinesische Marken und Stellantis) Anteile gewannen	units('gain',3).map(u => ({'VW GROUP':'VW-Konzern','CHINESE BRANDS':'chinesische Marken','STELLANTIS':'Stellantis','TESLA':'Tesla','RENAULT GROUP':'Renault-Gruppe','MERCEDES-BENZ':'Mercedes-Benz'})[u] || u).join(', ').replace(/, ([^,]*)$/, ' und $1')
+Lead: Premium-Richtungen	Von den deutschen Premiumherstellern legte nur Mercedes-Benz zu; BMW Group und Porsche verloren..	dsh('MERCEDES-BENZ') > 0 && dsh('BMW GROUP') < 0 && dsh('PORSCHE') < 0 ? '' : 'claim false'
+Grafik	!\[Anteil an den batterieelektrischen Neuzulassungen in Deutschland nach Konzern, dieses Jahr gegen Vorjahr \(Grafik englisch beschriftet\)\]\(docs/screenshots/chart-groups\.png\)
+E1 Überschrift	\*\*Der VW-Konzern wuchs, aber weit langsamer als der Markt\.\*\*	cun('VW GROUP',lastMonth().slice(0,4)) > cun('VW GROUP',String(+lastMonth().slice(0,4)-1)) && 100 * (cun('VW GROUP',lastMonth().slice(0,4)) / cun('VW GROUP',String(+lastMonth().slice(0,4)-1)) - 1) < 0.5 * growth('MARKET', lastMonth().slice(0,4)) ? '' : 'claim false'
+E1: VW mehr Autos	Er ließ ([\d.]+(?:,\d+)?) Elektroautos mehr zu als ein Jahr zuvor	cun('VW GROUP',lastMonth().slice(0,4)) - cun('VW GROUP',String(+lastMonth().slice(0,4)-1))
+E1: VW Wachstum	ein Plus von (\d+) %, während der Markt	100 * (cun('VW GROUP',lastMonth().slice(0,4)) / cun('VW GROUP',String(+lastMonth().slice(0,4)-1)) - 1)
+E1: Marktwachstum	während der Markt um (\d+) % wuchs; bei Marktwachstum hätte er seinen Anteil gehalten	growth('MARKET', lastMonth().slice(0,4))
+E1: Selbstzulassungen	Das gilt auch ohne Hersteller- und Händlerzulassungen	robustHolds()
+E1: Rauschen	jede genannte Veränderung übersteigt die Schwankung von Monat zu Monat	noiseOk(['VW GROUP','TESLA','CHINESE BRANDS','STELLANTIS','MERCEDES-BENZ','BMW GROUP','PORSCHE'])
+E2 Überschrift	\*\*Mercedes-Benz gewann mit zwei neuen Modellen\.\*\*	dsh('MERCEDES-BENZ') > 0 ? '' : 'claim false'
+E2: Mercedes Anteil	Sein Anteil stieg um ([\d.]+(?:,\d+)?) Punkte\.	dsh('MERCEDES-BENZ')
+E2: CLA + GLC	CLA und elektrischer GLC brachten ([\d.]+(?:,\d+)?) zusätzliche Elektroautos	mdelta('MERCEDES')[0][0] === 'CLA-KLASSE' && mdelta('MERCEDES')[1][0] === 'GLK, GLC' ? mdelta('MERCEDES')[0][1] + mdelta('MERCEDES')[1][1] : 'not the two largest'
+E2: mehr als der Zuwachs	zusätzliche Elektroautos, mehr als der gesamte Zuwachs der Marke, während ältere Elektromodelle zurückgingen	mdelta('MERCEDES')[0][1] + mdelta('MERCEDES')[1][1] > cun('MERCEDES-BENZ',lastMonth().slice(0,4)) - cun('MERCEDES-BENZ',String(+lastMonth().slice(0,4)-1)) && mdelta('MERCEDES').at(-1)[1] < 0 ? '' : 'claim false'
+E2: BMW Group Verlust	Die BMW Group verlor ([\d.]+(?:,\d+)?) Punkte	-dsh('BMW GROUP')
+E2: Porsche Verlust	Punkte, Porsche ([\d.]+(?:,\d+)?)\.	-dsh('PORSCHE')
+E3 Überschrift	\*\*Der Schub nach der Förderung war rein elektrisch\.\*\*	(mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'bev') - mg(lastMonth().slice(0,4),'01','05','bev')) - (mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'diesel') - mg(lastMonth().slice(0,4),'01','05','diesel')) > 10 && Math.abs((mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'phev') - mg(lastMonth().slice(0,4),'01','05','phev')) - (mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'diesel') - mg(lastMonth().slice(0,4),'01','05','diesel'))) < 5 ? '' : 'claim false'
+E3: Start der Förderung (fact bonus26_open)	Nach dem Start der Förderung am (\d+\. \w+) wuchsen	(([d, m]) => d + '. ' + ({ January: 'Januar', February: 'Februar', March: 'März', April: 'April', May: 'Mai', June: 'Juni', July: 'Juli', August: 'August', September: 'September', October: 'Oktober', November: 'November', December: 'Dezember' })[m])(fact('bonus26_open').split(' '))
+E3: BEV Differenz-von-Differenzen	wuchsen die batterieelektrischen Zulassungen um (\d+) Prozentpunkte schneller als zuvor, gemessen an Diesel als Kontrolle	(mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'bev') - mg(lastMonth().slice(0,4),'01','05','bev')) - (mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'diesel') - mg(lastMonth().slice(0,4),'01','05','diesel'))
+E3: PHEV Differenz-von-Differenzen	bewegten sich kaum \(\+([\d.]+(?:,\d+)?)\)	(mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'phev') - mg(lastMonth().slice(0,4),'01','05','phev')) - (mg(lastMonth().slice(0,4),'06',lastMonth().slice(5),'diesel') - mg(lastMonth().slice(0,4),'01','05','diesel'))
+E3: Zeitpunkt	Der Zeitpunkt passt zur Förderung, beweist sie aber nicht..
+E4 Überschrift	\*\*Wer am meisten gewann, hängt an einer Zuordnung\.\*\*	dsh('STELLANTIS INCL. LEAPMOTOR') > Math.max(...units('gain', 20).filter(u => !['STELLANTIS','CHINESE BRANDS'].includes(u)).map(u => dsh(u))) && dsh('CHINESE BRANDS') > dsh('STELLANTIS') ? '' : 'claim false'
+E4: Leapmotor-Gemeinschaftsunternehmen (in SOURCES.md zitiert)	Leapmotor ist eine chinesische Marke, aber Stellantis steuert ihren Vertrieb in Europa über ein Gemeinschaftsunternehmen
+E4: chinesisch mit Leapmotor	Als chinesisch gezählt, gewannen die chinesischen Marken ([\d.]+(?:,\d+)?) Punkte	dsh('CHINESE BRANDS')
+E4: Stellantis mit Leapmotor	Stellantis zugerechnet, gewann Stellantis ([\d.]+(?:,\d+)?) Punkte und wird zum größten Gewinner	dsh('STELLANTIS INCL. LEAPMOTOR')
+E4: chinesisch ohne Leapmotor	Gewinner, die chinesischen Marken ([\d.]+(?:,\d+)?)\.	dsh('CHINESE BRANDS EXCL. LEAPMOTOR')
+Begriffe	Begriffe: KBA-Neuzulassungen, Januar bis September; elektrisch = batterieelektrisch; Anteil = Teil an allen elektrischen Neuzulassungen in Deutschland; chinesische Marken = Hersteller mit Sitz in China \(Liste im README\)\.	lastMonth().slice(5) === '09' ? '' : 'memo says January to September but the data ends in another month'
+Kosten: Porsche Jahr	Porsche ordnet Belastungen des Jahres (\d{4}) von	irv('PORSCHE','2025','ev_platform_charge') > 0 ? '2025' : 'no 2025 charge'
+Kosten: Porsche Belastungen	Belastungen des Jahres \d{4} von ([\d.]+(?:,\d+)?) Mrd\. € seinem Elektroprogramm zu	irv('PORSCHE','2025','ev_platform_charge') + irv('PORSCHE','2025','battery_expense')
+Kosten: Porsche % Konzernumsatz	seinem Elektroprogramm zu, ([\d.]+(?:,\d+)?) % seines Konzernumsatzes	100 * 1000 * (irv('PORSCHE','2025','ev_platform_charge') + irv('PORSCHE','2025','battery_expense')) / irv('PORSCHE','2025','group_revenue')
+Kosten: Mercedes Jahr	Mercedes-Benz buchte (\d{4}) Wertminderungen	irv('MERCEDES','2024','ev_impairment') > 0 ? '2024' : 'no 2024 figure'
+Kosten: Mercedes Wertminderung	Wertminderungen von (\d+) Mio\. € auf Elektrofahrzeuge\. Das sind die letzten gesondert ausgewiesenen Jahre; BMW weist solche Belastungen nicht aus\.	irv('MERCEDES','2024','ev_impairment')
+Test 1: VW Q4 dieses Jahr	\*\*Der VW-Konzern holt Anteile zurück\*\*, wenn sein Anteil von Oktober bis Dezember (\d{4})	lastMonth().slice(0,4)
+Test 1: VW Q4 Vorjahr	über seinem Anteil von Oktober bis Dezember (\d{4}) von	String(+lastMonth().slice(0,4)-1)
+Test 1: VW Q4 Vorjahr Wert	Oktober bis Dezember \d{4} von ([\d.]+(?:,\d+)?) % liegt \(KBA	qsh('VW GROUP', String(+lastMonth().slice(0,4)-1), '10', '12')
+Test 1: Datenstand	\(KBA, Januar (\d{4})\)	String(+lastMonth().slice(0,4) + 1)
+Test 2: chinesische Marken Q4 Vorjahr	\*\*Der Zuwachs der Herausforderer kehrt sich um\*\*, wenn der Anteil der chinesischen Marken in diesem Quartal unter ihre ([\d.]+(?:,\d+)?) % des Vorjahres fällt	qsh('CHINESE BRANDS', String(+lastMonth().slice(0,4)-1), '10', '12')

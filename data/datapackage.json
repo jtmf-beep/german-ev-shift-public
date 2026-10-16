@@ -1,0 +1,1225 @@
+{
+  "name": "german-ev-shift",
+  "title": "German EV shift: KBA new-car registrations by brand and drive type, with company figures",
+  "description": "Data behind the dashboard (docs/index.html) and the memo. Built by scripts/build.js from the unchanged KBA statistics files in data/raw/; company figures are read from the reports listed in data/sources_fetch.tsv. Field descriptions here are the data dictionary; docs/data-dictionary.md is printed from this file by scripts/dictionary.js.",
+  "licenses": [
+    {
+      "name": "dl-de/by-2-0",
+      "path": "https://www.govdata.de/dl-de/by-2-0",
+      "title": "KBA statistics: Datenlizenz Deutschland – Namensnennung – Version 2.0 (source: Kraftfahrt-Bundesamt, Flensburg; processed by the author)"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Kraftfahrt-Bundesamt FZ10, FZ8, FZ28 (press releases: figures only, see SOURCES.md)",
+      "path": "https://www.kba.de/DE/Statistik/Fahrzeuge/Neuzulassungen/neuzulassungen_node.html"
+    },
+    {
+      "title": "BMW Group, Mercedes-Benz Group and Porsche AG annual and interim reports (see SOURCES.md)",
+      "path": "SOURCES.md"
+    }
+  ],
+  "missingValues": [
+    ""
+  ],
+  "resources": [
+    {
+      "name": "brands",
+      "path": "data/brands.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "Every brand-total row (\"<BRAND> ZUSAMMEN\") of every monthly KBA FZ10 file, January 2021 to the latest month, plus the market total (brand MARKET). One row per month and brand. Owner groups (VW Group, BMW Group, ...) are built from these rows by scripts/groups.js, not stored.",
+      "schema": {
+        "primaryKey": [
+          "month",
+          "brand"
+        ],
+        "fields": [
+          {
+            "name": "month",
+            "type": "string",
+            "description": "Calendar month the registrations were made in, YYYY-MM.",
+            "constraints": {
+              "required": true,
+              "pattern": "^20\\d\\d-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "brand",
+            "type": "string",
+            "description": "Brand as KBA names it (upper case, e.g. VW, MERCEDES, MG ROEWE); MARKET is the KBA total of all brands (\"NEUZULASSUNGEN INSGESAMT\"); SONSTIGE is KBA's \"other brands\".",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "registrations",
+            "type": "integer",
+            "description": "New passenger-car registrations in the month.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "bev",
+            "type": "integer",
+            "description": "Of which battery-electric (KBA column \"mit Elektroantrieb (BEV)\").",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "phev",
+            "type": "integer",
+            "description": "Of which plug-in hybrid (KBA column \"Plug-in-Hybridantrieb\").",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "diesel",
+            "type": "integer",
+            "description": "Of which diesel (KBA column \"mit Dieselantrieb\").",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_registrations",
+            "type": "integer",
+            "description": "New registrations from January to this month of the same year. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_bev",
+            "type": "integer",
+            "description": "Battery-electric, January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_phev",
+            "type": "integer",
+            "description": "Plug-in hybrid, January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_diesel",
+            "type": "integer",
+            "description": "Diesel, January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "clean",
+      "path": "data/clean.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "The rows the dashboard's German-premium charts use: BMW, MINI, MERCEDES, PORSCHE and MARKET from every monthly FZ10 file, with the file each row came from.",
+      "schema": {
+        "primaryKey": [
+          "month",
+          "brand"
+        ],
+        "fields": [
+          {
+            "name": "month",
+            "type": "string",
+            "description": "Calendar month the registrations were made in, YYYY-MM.",
+            "constraints": {
+              "required": true,
+              "pattern": "^20\\d\\d-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "brand",
+            "type": "string",
+            "description": "BMW, MINI, MERCEDES, PORSCHE or MARKET (all brands).",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "BMW",
+                "MINI",
+                "MERCEDES",
+                "PORSCHE",
+                "MARKET"
+              ]
+            }
+          },
+          {
+            "name": "registrations",
+            "type": "integer",
+            "description": "New passenger-car registrations in the month.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "bev",
+            "type": "integer",
+            "description": "Of which battery-electric (KBA column \"mit Elektroantrieb (BEV)\").",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "phev",
+            "type": "integer",
+            "description": "Of which plug-in hybrid.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "diesel",
+            "type": "integer",
+            "description": "Of which diesel.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_registrations",
+            "type": "integer",
+            "description": "New registrations from January to this month.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_bev",
+            "type": "integer",
+            "description": "Battery-electric, January to this month.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "source_file",
+            "type": "string",
+            "description": "The unchanged KBA file in data/raw/kba/ the row was read from.",
+            "constraints": {
+              "required": true,
+              "pattern": "^data/raw/kba/fz10_\\d{4}_\\d{2}\\.xlsx$"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "models",
+      "path": "data/models.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "Every model-series row of every monthly FZ10 file. KBA groups models by series, so one row can hold electric and combustion versions (e.g. BMW X3 includes the iX3).",
+      "schema": {
+        "primaryKey": [
+          "month",
+          "brand",
+          "model"
+        ],
+        "fields": [
+          {
+            "name": "month",
+            "type": "string",
+            "description": "Calendar month the registrations were made in, YYYY-MM.",
+            "constraints": {
+              "required": true,
+              "pattern": "^20\\d\\d-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "brand",
+            "type": "string",
+            "description": "Brand as in brands.csv.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "model",
+            "type": "string",
+            "description": "Model series as KBA names it.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "registrations",
+            "type": "integer",
+            "description": "New registrations of the series in the month.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "bev",
+            "type": "integer",
+            "description": "Of which battery-electric. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "phev",
+            "type": "integer",
+            "description": "Of which plug-in hybrid. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "diesel",
+            "type": "integer",
+            "description": "Of which diesel. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_registrations",
+            "type": "integer",
+            "description": "January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_bev",
+            "type": "integer",
+            "description": "Battery-electric, January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_phev",
+            "type": "integer",
+            "description": "Plug-in hybrid, January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "ytd_diesel",
+            "type": "integer",
+            "description": "Diesel, January to this month. Empty where KBA marks the cell as a gap (\"/\", \"X\" or \".\").",
+            "constraints": {
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "keepers",
+      "path": "data/keepers.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "New registrations by keeper group and brand, January to the file's month, from KBA FZ8 table 8.9.1 (all drive types; KBA publishes no split by keeper and drive type per brand). total = private + commercial + unknown; commercial = dealer + manufacturer + rental + other_services + other_commercial.",
+      "schema": {
+        "primaryKey": [
+          "month",
+          "brand"
+        ],
+        "fields": [
+          {
+            "name": "month",
+            "type": "string",
+            "description": "Last month of the January-to-month period, YYYY-MM.",
+            "constraints": {
+              "required": true,
+              "pattern": "^20\\d\\d-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "brand",
+            "type": "string",
+            "description": "Brand as in brands.csv; MARKET is \"INSGESAMT\".",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "total",
+            "type": "integer",
+            "description": "All new registrations, January to month.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "private",
+            "type": "integer",
+            "description": "Registered to private keepers.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "commercial",
+            "type": "integer",
+            "description": "Registered to commercial keepers (sum of the five groups that follow).",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "dealer",
+            "type": "integer",
+            "description": "Registered to motor-vehicle dealers (\"Kfz-Handel\"), self-registrations by dealers.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "manufacturer",
+            "type": "integer",
+            "description": "Registered to vehicle makers (\"Kfz-Hersteller\"), self-registrations by makers.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "rental",
+            "type": "integer",
+            "description": "Registered to car-rental firms.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "other_services",
+            "type": "integer",
+            "description": "Other service firms.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "other_commercial",
+            "type": "integer",
+            "description": "Other commercial keepers.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "unknown",
+            "type": "integer",
+            "description": "Keeper group not known.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "keepers_bev",
+      "path": "data/keepers_bev.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "Market-level new registrations by keeper group, all cars and battery-electric, January to the file's month, from KBA FZ28.3.",
+      "schema": {
+        "primaryKey": [
+          "month",
+          "keeper_group"
+        ],
+        "fields": [
+          {
+            "name": "month",
+            "type": "string",
+            "description": "Last month of the January-to-month period, YYYY-MM.",
+            "constraints": {
+              "required": true,
+              "pattern": "^20\\d\\d-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "keeper_group",
+            "type": "string",
+            "description": "total, private, commercial, dealer, manufacturer, rental or unknown.",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "total",
+                "private",
+                "commercial",
+                "dealer",
+                "manufacturer",
+                "rental",
+                "unknown"
+              ]
+            }
+          },
+          {
+            "name": "all",
+            "type": "integer",
+            "description": "All new cars in the group.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "bev",
+            "type": "integer",
+            "description": "Of which battery-electric.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ir_figures",
+      "path": "data/ir_figures.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "Company figures read from the BMW, Mercedes-Benz and Porsche reports, one per row, each with the report and page. data/ir_evidence.tsv holds the text each value was read from; validate.js re-reads it from the extracted report text.",
+      "schema": {
+        "primaryKey": [
+          "company",
+          "period",
+          "metric"
+        ],
+        "fields": [
+          {
+            "name": "company",
+            "type": "string",
+            "description": "BMW (BMW Group), MERCEDES (Mercedes-Benz Group) or PORSCHE (Porsche AG).",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "BMW",
+                "MERCEDES",
+                "PORSCHE"
+              ]
+            }
+          },
+          {
+            "name": "period",
+            "type": "string",
+            "description": "Financial year (YYYY) or half year (H1-YYYY).",
+            "constraints": {
+              "required": true,
+              "pattern": "^(H1-)?20\\d\\d$"
+            }
+          },
+          {
+            "name": "metric",
+            "type": "string",
+            "description": "Short metric key, e.g. auto_margin (Automotive/Cars segment EBIT margin), global_bev_deliveries, ev_impairment.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "description": "The figure as the report prints it, in the unit of the next column.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "unit",
+            "type": "string",
+            "description": "% , pp (percentage points), cars, EUR m or EUR bn.",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "%",
+                "pp",
+                "cars",
+                "EUR m",
+                "EUR bn"
+              ]
+            }
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "description": "The metric in words.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "source_file",
+            "type": "string",
+            "description": "Local path of the report (fetched by scripts/fetch-sources.js; URL and SHA-256 in data/sources_fetch.tsv).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "page",
+            "type": "integer",
+            "description": "Page of the PDF the value is printed on (1-based PDF page, not the printed folio).",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ir_evidence",
+      "path": "data/ir_evidence.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "For every row of ir_figures.csv: the text fragment on the page that contains the value, and which position in it the value takes.",
+      "schema": {
+        "fields": [
+          {
+            "name": "company",
+            "type": "string",
+            "description": "As in ir_figures.csv.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "period",
+            "type": "string",
+            "description": "As in ir_figures.csv.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "metric",
+            "type": "string",
+            "description": "As in ir_figures.csv.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "pos",
+            "type": "integer",
+            "description": "Position of the value among the numbers in the fragment (1 = first).",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "fragment",
+            "type": "string",
+            "description": "Text as extracted from the page (whitespace collapsed).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "column_order",
+            "type": "string",
+            "description": "The column headers the fragment's numbers follow, as the page prints them.",
+            "constraints": {
+              "required": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "published_totals",
+      "path": "data/published_totals.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "description": "Totals that KBA prints in its press releases, with the line each is printed in; validate.js reads each from the fetched release with the pattern, checks the recorded number and line, and compares the number with the totals built from FZ10.",
+      "schema": {
+        "fields": [
+          {
+            "name": "label",
+            "type": "string",
+            "description": "What the total is.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "period",
+            "type": "string",
+            "description": "Year (YYYY) or month (YYYY-MM).",
+            "constraints": {
+              "required": true,
+              "pattern": "^20\\d\\d(-\\d\\d)?$"
+            }
+          },
+          {
+            "name": "brand",
+            "type": "string",
+            "description": "MARKET or a brand as in brands.csv.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "field",
+            "type": "string",
+            "description": "Column of brands.csv the total is compared with.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "source_file",
+            "type": "string",
+            "description": "Local copy of the press release, fetched into data/cache/press/ by scripts/fetch-sources.js (not in git; URL in data/sources_fetch.tsv and SOURCES.md).",
+            "constraints": {
+              "required": true,
+              "pattern": "^data/cache/press/"
+            }
+          },
+          {
+            "name": "pattern",
+            "type": "string",
+            "description": "Regular expression; its first group is the total as printed (German thousands separators).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "published",
+            "type": "integer",
+            "description": "The total as KBA prints it (thousands separators removed).",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "source_line",
+            "type": "string",
+            "description": "The text of the release the pattern matches, as printed (German number format); the recorded total is read from it.",
+            "constraints": {
+              "required": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "facts",
+      "path": "data/facts.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Dates and policy facts the page states (bonus dates, KBA press figures, company statements), each with the source text it was taken from; validate.js finds the source text in the cached source.",
+      "schema": {
+        "primaryKey": [
+          "key"
+        ],
+        "fields": [
+          {
+            "name": "key",
+            "type": "string",
+            "description": "Name the page uses for the fact.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "description": "The fact as the page prints it.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "Local path of the source page or report.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "source_text",
+            "type": "string",
+            "description": "Exact text in the source that states the fact.",
+            "constraints": {
+              "required": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "sources_fetch",
+      "path": "data/sources_fetch.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Company reports and policy pages that are not redistributed: where scripts/fetch-sources.js downloads each and the SHA-256 the download must match.",
+      "schema": {
+        "primaryKey": [
+          "local_file"
+        ],
+        "fields": [
+          {
+            "name": "local_file",
+            "type": "string",
+            "description": "Path under data/cache/ (ignored by git).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "description": "Download URL.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "sha256",
+            "type": "string",
+            "description": "SHA-256 the download must match; - for web pages that change with every load (no pinned hash; their quoted text is checked instead).",
+            "constraints": {
+              "required": true,
+              "pattern": "^([0-9a-f]{64}|-)$"
+            }
+          },
+          {
+            "name": "bytes",
+            "type": "string",
+            "description": "Expected size in bytes; - where not pinned.",
+            "constraints": {
+              "required": true,
+              "pattern": "^([0-9]+|-)$"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "context_figures",
+      "path": "data/context_figures.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Figures from outside the KBA data that the page states: VW Group's own Western European BEV market share and ACEA's EU and German BEV growth (EU anchor), fleet CO2 against EU targets, and the lowest German list price of an electric model per group. validate.js finds each quote on its cited page and the value inside the quote.",
+      "schema": {
+        "primaryKey": [
+          "key"
+        ],
+        "fields": [
+          {
+            "name": "key",
+            "type": "string",
+            "description": "Name the page and the claim checker use (ctx(key)).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "description": "The figure as a plain number (no thousands separator).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "unit",
+            "type": "string",
+            "description": "Unit and basis, e.g. g CO2/km, % growth against Jan–Aug 2025, EUR incl. VAT.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "period",
+            "type": "string",
+            "description": "Period or date the figure refers to.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "description": "What the figure is.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "Local path of the cached source; #n is the PDF page (1-based PDF page, not the printed folio).",
+            "constraints": {
+              "required": true,
+              "pattern": "^data/cache/(context|ir)/[^#\\s]+(#\\d+)?$"
+            }
+          },
+          {
+            "name": "quote",
+            "type": "string",
+            "description": "Text on that page that contains the value (whitespace and HTML tags ignored when compared).",
+            "constraints": {
+              "required": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "memo_claims",
+      "path": "data/memo_claims.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Claim list for memo.md: each row finds one number or statement with a regular expression and recomputes it from the data; scripts/check-memo-numbers.js fails if any differs.",
+      "schema": {
+        "fields": [
+          {
+            "name": "label",
+            "type": "string",
+            "description": "Short name of the claim.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "pattern",
+            "type": "string",
+            "description": "Regular expression; its first group is the number as written in the document (no group: the sentence must be present).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "formula",
+            "type": "string",
+            "description": "JavaScript expression over the helper functions in check-memo-numbers.js; returns the expected text, or an empty string when a statement-only claim holds.",
+            "constraints": {}
+          }
+        ]
+      }
+    },
+    {
+      "name": "readme_claims",
+      "path": "data/readme_claims.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Claim list for README.md: each row finds one number or statement with a regular expression and recomputes it from the data; scripts/check-memo-numbers.js fails if any differs.",
+      "schema": {
+        "fields": [
+          {
+            "name": "label",
+            "type": "string",
+            "description": "Short name of the claim.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "pattern",
+            "type": "string",
+            "description": "Regular expression; its first group is the number as written in the document (no group: the sentence must be present).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "formula",
+            "type": "string",
+            "description": "JavaScript expression over the helper functions in check-memo-numbers.js; returns the expected text, or an empty string when a statement-only claim holds.",
+            "constraints": {}
+          }
+        ]
+      }
+    },
+    {
+      "name": "memo_de_claims",
+      "path": "data/memo_de_claims.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Claim list for memo.de.md (German translation; same formulas as memo_claims.tsv, patterns in German number format): each row finds one number or statement with a regular expression and recomputes it from the data; scripts/check-memo-numbers.js fails if any differs.",
+      "schema": {
+        "fields": [
+          {
+            "name": "label",
+            "type": "string",
+            "description": "Short name of the claim.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "pattern",
+            "type": "string",
+            "description": "Regular expression; its first group is the number as written in the document (no group: the sentence must be present).",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "formula",
+            "type": "string",
+            "description": "JavaScript expression over the helper functions in check-memo-numbers.js; returns the expected text, or an empty string when a statement-only claim holds.",
+            "constraints": {}
+          }
+        ]
+      }
+    },
+    {
+      "name": "kba_download_log",
+      "path": "data/raw/kba/_download_log.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": false
+      },
+      "description": "Download log of the FZ10 files (no header row; columns in this order).",
+      "schema": {
+        "fields": [
+          {
+            "name": "file",
+            "type": "string",
+            "description": "File name in data/raw/kba/.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "description": "KBA download URL.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "http_status",
+            "type": "integer",
+            "description": "HTTP status of the download.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "downloaded",
+            "type": "string",
+            "description": "Download date, YYYY-MM-DD.",
+            "constraints": {
+              "required": true,
+              "pattern": "^\\d{4}-\\d\\d-\\d\\d$"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "fz8_download_log",
+      "path": "data/raw/fz8/_download_log.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Download log of the KBA FZ8 files.",
+      "schema": {
+        "fields": [
+          {
+            "name": "file",
+            "type": "string",
+            "description": "File name in data/raw/fz8/.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "description": "KBA download URL.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "http_status",
+            "type": "integer",
+            "description": "HTTP status of the download.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "downloaded",
+            "type": "string",
+            "description": "Download date, YYYY-MM-DD.",
+            "constraints": {
+              "required": true,
+              "pattern": "^\\d{4}-\\d\\d-\\d\\d$"
+            }
+          },
+          {
+            "name": "bytes",
+            "type": "integer",
+            "description": "Size in bytes.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "sha256",
+            "type": "string",
+            "description": "SHA-256 of the file.",
+            "constraints": {
+              "required": true,
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "fz28_download_log",
+      "path": "data/raw/fz28/_download_log.tsv",
+      "format": "tsv",
+      "dialect": {
+        "delimiter": "\t",
+        "header": true
+      },
+      "description": "Download log of the KBA FZ28 files.",
+      "schema": {
+        "fields": [
+          {
+            "name": "file",
+            "type": "string",
+            "description": "File name in data/raw/fz28/.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "description": "KBA download URL.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "http_status",
+            "type": "integer",
+            "description": "HTTP status of the download.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "downloaded",
+            "type": "string",
+            "description": "Download date, YYYY-MM-DD.",
+            "constraints": {
+              "required": true,
+              "pattern": "^\\d{4}-\\d\\d-\\d\\d$"
+            }
+          },
+          {
+            "name": "bytes",
+            "type": "integer",
+            "description": "Size in bytes.",
+            "constraints": {
+              "required": true,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "sha256",
+            "type": "string",
+            "description": "SHA-256 of the file.",
+            "constraints": {
+              "required": true,
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

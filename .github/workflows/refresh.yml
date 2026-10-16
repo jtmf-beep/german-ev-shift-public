@@ -1,0 +1,40 @@
+# Monthly data refresh. KBA publishes the previous month's registrations in the first days of a month,
+# so it was written to run daily from the 4th to the 12th; here it runs only when started by hand. When a new KBA file exists it
+# rebuilds the data and opens a pull request; the checks on that pull request then show which claims
+# (memo, README) and settings (LAST in validate.js, press-release totals) need the new month.
+name: refresh
+# The daily schedule is switched off in this copy: it would push branches and open pull requests
+# without anyone starting it. Start it by hand (Actions > refresh > Run workflow), or restore
+#   schedule:
+#     - cron: '30 6 4-12 * *'
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Look for new KBA files
+        id: look
+        run: node scripts/refresh.js
+      - name: Rebuild and open a pull request
+        if: steps.look.outputs.new == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/build.js
+          branch="refresh/${{ steps.look.outputs.month }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add data docs/data.js
+          git commit -m "Add KBA data for ${{ steps.look.outputs.month }}"
+          git push origin "$branch"
+          gh pr create --title "Add KBA data for ${{ steps.look.outputs.month }}" --body "New KBA files downloaded and the data rebuilt by scripts/refresh.js. Before merging: set LAST in scripts/validate.js, add the month's press-release totals to data/published_totals.csv, and update memo.md, README.md and their claim files (docs/maintaining.md). The checks on this pull request fail until then; that is intended."

@@ -1,0 +1,44 @@
+# Runs the data checks on every push and pull request: fetch the company reports (not in git),
+# extract their text, rebuild the data from data/raw, validate it and check every claim in the
+# memo and README, then open the dashboard in headless Chromium (check-browser.js).
+# The online link check needs the open internet's patience, so it stays local
+# (node scripts/check-all.js --online, see README, How to rerun).
+name: checks
+on:
+  push:
+  pull_request:
+jobs:
+  data:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: false
+      - name: Fetch company reports and policy pages (checked against their SHA-256)
+        run: node scripts/fetch-sources.js
+      - name: Extract page-split text from the reports
+        run: uv run --with "pypdf==6.19.0" --with "cryptography==46.0.3" python -I scripts/extract_pdf_text.py
+      - name: Rebuild from data/raw and compare with the committed files
+        run: |
+          node scripts/build.js
+          git diff --exit-code -- data docs/data.js
+      - name: Validate
+        run: node scripts/validate.js
+      - name: Check every number in memo and README
+        run: node scripts/check-memo-numbers.js
+      - name: Link checker self-test (local stub server)
+        run: node scripts/check-links.js --self-test
+      - name: Publish scan of the current tree
+        run: node scripts/check-publish.js --tree-only
+      # Playwright is installed here only, pinned, and not saved to the repository (no package.json).
+      - name: Install Playwright and its Chromium (browser check only)
+        run: |
+          npm install --no-save --no-package-lock playwright-core@1.64.0
+          npx playwright-core install --with-deps chromium
+      - name: Browser check (phone and desktop, light and dark; writes to data/cache only)
+        run: node scripts/check-browser.js --no-write --pdf

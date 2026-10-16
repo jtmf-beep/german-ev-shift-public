@@ -1,0 +1,66 @@
+company,period,metric,value,unit,label,source_file,page
+BMW,2021,auto_margin,10.3,%,Automotive segment EBIT margin,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2022,auto_margin,8.6,%,Automotive segment EBIT margin,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2023,auto_margin,9.8,%,Automotive segment EBIT margin,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2024,auto_margin,6.3,%,Automotive segment EBIT margin,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2025,auto_margin,5.3,%,Automotive segment EBIT margin,data/cache/ir/bmw_AR2025.pdf,9
+BMW,H1-2026,auto_margin,3.6,%,Automotive segment EBIT margin,data/cache/ir/bmw_H1_2026.pdf,4
+MERCEDES,2021,auto_margin,12.9,%,Mercedes-Benz Cars return on sales (reported),data/cache/ir/mb_AR2022.pdf,361
+MERCEDES,2022,auto_margin,14.6,%,Mercedes-Benz Cars return on sales (reported),data/cache/ir/mb_AR2022.pdf,361
+MERCEDES,2023,auto_margin,12.6,%,Mercedes-Benz Cars return on sales (reported),data/cache/ir/mb_AR2024.pdf,450
+MERCEDES,2024,auto_margin,7.9,%,Mercedes-Benz Cars return on sales (reported),data/cache/ir/mb_AR2024.pdf,450
+MERCEDES,2024,cars_revenue_ref,107761,EUR m,Mercedes-Benz Cars revenue (prior-year column of the 2025 results),data/cache/ir/mb_FY2025_press.pdf,3
+MERCEDES,2025,cars_ebit,3564,EUR m,Mercedes-Benz Cars EBIT,data/cache/ir/mb_FY2025_press.pdf,3
+MERCEDES,2025,cars_revenue,96407,EUR m,Mercedes-Benz Cars revenue,data/cache/ir/mb_FY2025_press.pdf,3
+MERCEDES,H1-2026,cars_ebit,858,EUR m,Mercedes-Benz Cars EBIT,data/cache/ir/mb_Q2_2026_press.pdf,5
+MERCEDES,H1-2026,cars_revenue,45945,EUR m,Mercedes-Benz Cars revenue,data/cache/ir/mb_Q2_2026_press.pdf,5
+MERCEDES,2021,auto_margin_adj,13.1,%,Mercedes-Benz Cars adjusted return on sales,data/cache/ir/mb_AR2022.pdf,361
+MERCEDES,2022,auto_margin_adj,14.6,%,Mercedes-Benz Cars adjusted return on sales,data/cache/ir/mb_AR2022.pdf,361
+MERCEDES,2023,auto_margin_adj,12.6,%,Mercedes-Benz Cars adjusted return on sales,data/cache/ir/mb_AR2024.pdf,450
+MERCEDES,2024,auto_margin_adj,8.1,%,Mercedes-Benz Cars adjusted return on sales,data/cache/ir/mb_AR2024.pdf,450
+MERCEDES,2025,auto_margin_adj,5.0,%,Mercedes-Benz Cars adjusted return on sales,data/cache/ir/mb_FY2025_press.pdf,3
+MERCEDES,H1-2026,auto_margin_adj,4.0,%,Mercedes-Benz Cars adjusted return on sales,data/cache/ir/mb_Q2_2026_press.pdf,5
+PORSCHE,2021,auto_margin,16.6,%,Automotive segment return on sales,data/cache/ir/por_AR2023.pdf,219
+PORSCHE,2022,auto_margin,18.6,%,Automotive segment return on sales,data/cache/ir/por_AR2023.pdf,219
+PORSCHE,2023,auto_margin,18.6,%,Automotive segment return on sales,data/cache/ir/por_AR2023.pdf,219
+PORSCHE,2024,auto_margin,14.5,%,Automotive segment return on sales,data/cache/ir/por_AR2025.pdf,243
+PORSCHE,2025,auto_margin,0.3,%,Automotive segment return on sales,data/cache/ir/por_AR2025.pdf,243
+PORSCHE,H1-2026,auto_margin,8.0,%,Automotive segment return on sales,data/cache/ir/por_H1_2026.pdf,3
+BMW,2021,global_bev_share,4.1,%,Share of all-electric cars in BMW Group deliveries,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2022,global_bev_share,9.0,%,Share of all-electric cars in BMW Group deliveries,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2023,global_bev_share,14.7,%,Share of all-electric cars in BMW Group deliveries,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2024,global_bev_share,17.4,%,Share of all-electric cars in BMW Group deliveries,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2025,global_bev_share,17.9,%,Share of all-electric cars in BMW Group deliveries,data/cache/ir/bmw_AR2025.pdf,9
+BMW,2025,global_deliveries,2463681,cars,BMW Group deliveries (BMW MINI Rolls-Royce),data/cache/ir/bmw_AR2025.pdf,12
+BMW,2025,global_bev_deliveries,442059,cars,BMW Group all-electric deliveries,data/cache/ir/bmw_AR2025.pdf,12
+BMW,H1-2026,global_deliveries,1156727,cars,BMW Group deliveries (BMW MINI Rolls-Royce),data/cache/ir/bmw_H1_2026.pdf,4
+BMW,H1-2026,global_bev_deliveries,204295,cars,BMW Group all-electric deliveries,data/cache/ir/bmw_H1_2026.pdf,14
+MERCEDES,2021,global_deliveries,1943930,cars,Mercedes-Benz Cars unit sales,data/cache/ir/mb_AR2022.pdf,361
+MERCEDES,2021,global_bev_deliveries,89500,cars,Mercedes-Benz brand BEV sales (published rounded),data/cache/ir/mb_AR2022.pdf,52
+MERCEDES,2022,global_deliveries,2040719,cars,Mercedes-Benz Cars unit sales,data/cache/ir/mb_AR2022.pdf,361
+MERCEDES,2022,global_bev_deliveries,149200,cars,Mercedes-Benz brand BEV sales (published rounded),data/cache/ir/mb_AR2022.pdf,52
+MERCEDES,2023,global_deliveries,2044051,cars,Mercedes-Benz Cars unit sales,data/cache/ir/mb_AR2024.pdf,47
+MERCEDES,2023,global_bev_deliveries,240668,cars,Mercedes-Benz Cars BEV sales,data/cache/ir/mb_AR2024.pdf,47
+MERCEDES,2024,global_deliveries,1983403,cars,Mercedes-Benz Cars unit sales,data/cache/ir/mb_AR2024.pdf,47
+MERCEDES,2024,global_bev_deliveries,185059,cars,Mercedes-Benz Cars BEV sales,data/cache/ir/mb_AR2024.pdf,47
+MERCEDES,2025,global_deliveries,1801291,cars,Mercedes-Benz Cars unit sales,data/cache/ir/mb_FY2025_press.pdf,3
+MERCEDES,2025,global_bev_deliveries,168823,cars,Mercedes-Benz Cars BEV sales,data/cache/ir/mb_FY2025_press.pdf,3
+MERCEDES,H1-2026,global_deliveries,837195,cars,Mercedes-Benz Cars unit sales,data/cache/ir/mb_Q2_2026_press.pdf,5
+MERCEDES,H1-2026,global_bev_deliveries,97110,cars,Mercedes-Benz Cars BEV sales,data/cache/ir/mb_Q2_2026_press.pdf,5
+PORSCHE,2021,global_bev_share,13.7,%,Automotive BEV share of Porsche deliveries,data/cache/ir/por_AR2023.pdf,219
+PORSCHE,2022,global_bev_share,11.3,%,Automotive BEV share of Porsche deliveries,data/cache/ir/por_AR2023.pdf,219
+PORSCHE,2023,global_bev_share,12.8,%,Automotive BEV share of Porsche deliveries,data/cache/ir/por_AR2023.pdf,219
+PORSCHE,2024,global_bev_share,12.7,%,Automotive BEV share of Porsche deliveries,data/cache/ir/por_AR2025.pdf,243
+PORSCHE,2025,global_bev_share,22.2,%,Automotive BEV share of Porsche deliveries,data/cache/ir/por_AR2025.pdf,243
+PORSCHE,H1-2026,global_bev_share,19.4,%,Automotive BEV share of Porsche deliveries,data/cache/ir/por_H1_2026.pdf,3
+PORSCHE,2025,global_deliveries,279449,cars,Porsche deliveries,data/cache/ir/por_AR2025.pdf,243
+PORSCHE,2025,ev_platform_charge,1.7,EUR bn,Impairments and provisions from rescheduling the new electric vehicle platform (around),data/cache/ir/por_AR2025.pdf,52
+PORSCHE,2025,battery_expense,0.7,EUR bn,Additional expenses from battery activities (around),data/cache/ir/por_AR2025.pdf,52
+BMW,H1-2026,tariff_margin_hit,1.25,pp,Reduction of Automotive EBIT margin from additional US tariffs (approximately),data/cache/ir/bmw_H1_2026.pdf,16
+PORSCHE,2025,auto_revenue,32185,EUR m,Automotive sales revenue,data/cache/ir/por_AR2025.pdf,52
+PORSCHE,2025,us_tariff_effect,0.7,EUR bn,Reduction of operating profit from US import tariffs (around),data/cache/ir/por_AR2025.pdf,52
+MERCEDES,2024,ev_impairment,380,EUR m,Impairment losses on vehicles with electric drives (in the leased-assets note) due to the slower transition to all-electric vehicles,data/cache/ir/mb_AR2024.pdf,341
+PORSCHE,H1-2025,auto_margin,5.2,%,Automotive segment return on sales (prior-year column),data/cache/ir/por_H1_2026.pdf,3
+PORSCHE,2025,taycan_deliveries,16339,cars,Taycan deliveries,data/cache/ir/por_AR2025.pdf,51
+PORSCHE,2025,group_revenue,36272,EUR m,Porsche AG Group sales revenue,data/cache/ir/por_AR2025.pdf,54
+MERCEDES,2024,smart_units,5696,cars,smart units in Mercedes-Benz Cars unit sales,data/cache/ir/mb_AR2024.pdf,47

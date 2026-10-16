@@ -1,0 +1,4 @@
+file	url	http_status	downloaded	bytes	sha256
+fz8_202508.xlsx	https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Fahrzeuge/FZ8/fz8_202508.xlsx?__blob=publicationFile&v=5	200	2026-10-08	315669	23d03673b599010230fee8219c2247e4b45fc1b899f37ab73aca52e1e642b092
+fz8_202509.xlsx	https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Fahrzeuge/FZ8/fz8_202509.xlsx?__blob=publicationFile&v=5	200	2026-10-08	316115	523f34d5191822264fa9ae767b84f9a38fe5bb544b0afd5c00b3ff0eb29a5043
+fz8_202608.xlsx	https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Fahrzeuge/FZ8/fz8_202608.xlsx?__blob=publicationFile&v=4	200	2026-10-08	323738	c85b5881a7bf631f06e22f34b5ec5034bdf447353f1c7089298694bef9deb52c

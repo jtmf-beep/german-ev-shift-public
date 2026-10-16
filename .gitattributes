@@ -1,0 +1,7 @@
+# Raw downloads must stay byte-for-byte as downloaded; no line-ending conversion.
+data/raw/** -text
+# Generated text files are written with LF by the scripts; keep them LF on every checkout so a rerun
+# does not show them as modified.
+data/*.csv text eol=lf
+data/*.tsv text eol=lf
+docs/data.js text eol=lf

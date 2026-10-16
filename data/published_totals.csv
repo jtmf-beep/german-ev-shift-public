@@ -1,0 +1,14 @@
+label,period,brand,field,source_file,pattern,published,source_line
+2025 all new cars,2025,MARKET,registrations,data/cache/press/kba_pm01_2026_dez2025.html,INSGESAMT 246\.439 \S+ \S+ ([\d.]+) 100,2857591,"INSGESAMT 246.439 100,0 +9,7 2.857.591 100"
+2025 all new BEV,2025,MARKET,bev,data/cache/press/kba_pm01_2026_dez2025.html,([\d.]+) Elektro- Pkw \( ?BEV,545142,545.142 Elektro- Pkw ( BEV
+2025 BMW new cars,2025,BMW,registrations,data/cache/press/kba_pm01_2026_dez2025.html, BMW [\d.]+ \S+ \S+ ([\d.]+),253712,"BMW 24.176 9,8 +11,9 253.712"
+2025 Mercedes new cars,2025,MERCEDES,registrations,data/cache/press/kba_pm01_2026_dez2025.html, MERCEDES [\d.]+ \S+ \S+ ([\d.]+),260415,"MERCEDES 20.265 8,2 -4,0 260.415"
+2025 Porsche new cars,2025,PORSCHE,registrations,data/cache/press/kba_pm01_2026_dez2025.html, PORSCHE [\d.]+ \S+ \S+ ([\d.]+),29692,"PORSCHE 1.669 0,7 -33,7 29.692"
+Sep 2026 all new cars,2026-09,MARKET,registrations,data/cache/press/kba_pm41_2026_sep2026.html,Oktober 2026\. ([\d.]+) Personenkraftwagen,256774,Oktober 2026. 256.774 Personenkraftwagen
+Sep 2026 all new BEV,2026-09,MARKET,bev,data/cache/press/kba_pm41_2026_sep2026.html,Elektro \( ?BEV ?\) Neuwagen machten mit ([\d.]+) Einheiten,88599,Elektro ( BEV ) Neuwagen machten mit 88.599 Einheiten
+Sep 2026 all new plug-in hybrids,2026-09,MARKET,phev,data/cache/press/kba_pm41_2026_sep2026.html,darunter ([\d.]+) Plug-in-Hybride,27681,darunter 27.681 Plug-in-Hybride
+Jan-Sep 2026 all new cars,2026-09,MARKET,ytd_registrations,data/cache/press/kba_pm41_2026_sep2026.html,INSGESAMT 256\.774 \S+ \S+ ([\d.]+),2221798,"INSGESAMT 256.774 100,0 +9,0 2.221.798"
+Sep 2026 BMW new cars,2026-09,BMW,registrations,data/cache/press/kba_pm41_2026_sep2026.html, BMW ([\d.]+),18924,BMW 18.924
+Sep 2026 Mercedes new cars,2026-09,MERCEDES,registrations,data/cache/press/kba_pm41_2026_sep2026.html, MERCEDES ([\d.]+),21595,MERCEDES 21.595
+Sep 2026 Porsche new cars,2026-09,PORSCHE,registrations,data/cache/press/kba_pm41_2026_sep2026.html, PORSCHE ([\d.]+),1824,PORSCHE 1.824
+Jan-Sep 2026 Porsche new cars,2026-09,PORSCHE,ytd_registrations,data/cache/press/kba_pm41_2026_sep2026.html, PORSCHE [\d.]+ \S+ \S+ ([\d.]+),21675,"PORSCHE 1.824 0,7 -18,8 21.675"

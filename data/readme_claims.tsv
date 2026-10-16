@@ -1,0 +1,53 @@
+label	pattern	formula
+Title	German EV shift: who captured Germany's (\d{4}) electric-car boom	lastMonth().slice(0,4)
+Byline	ESCP Business School · October 2026 · public data only
+Lede: market growth	Germany's electric-car market grew (\d+)% in January	growth('MARKET', lastMonth().slice(0,4))
+Lede: period year	in January–September (\d{4}), but	lastMonth().slice(5) === '09' ? lastMonth().slice(0,4) : 'data no longer ends in September'
+Lede: biggest loser named	but (VW Group)'s share fell	({'VW GROUP':'VW Group','CHINESE BRANDS':'Chinese brands','STELLANTIS':'Stellantis','TESLA':'Tesla','RENAULT GROUP':'Renault Group','MERCEDES-BENZ':'Mercedes-Benz'})[units('lose',1)[0]] || units('lose',1)[0]
+Lede: VW Group last year	VW Group's share fell from ([\d.]+)% to	csh('VW GROUP', String(+lastMonth().slice(0,4)-1))
+Lede: VW Group this year	share fell from [\d.]+% to ([\d.]+)% as	csh('VW GROUP', lastMonth().slice(0,4))
+Lede: three biggest gainers named	as (Tesla, Chinese brands and Stellantis) took share	units('gain',3).map(u => ({'VW GROUP':'VW Group','CHINESE BRANDS':'Chinese brands','STELLANTIS':'Stellantis','TESLA':'Tesla','RENAULT GROUP':'Renault Group','MERCEDES-BENZ':'Mercedes-Benz'})[u] || u).join(', ').replace(/, ([^,]*)$/, ' and $1')
+Lede: premium directions	Of the German premium makers, Mercedes-Benz gained \(([\d.]+)% to	csh('MERCEDES-BENZ', String(+lastMonth().slice(0,4)-1))
+Lede: Mercedes this year	Mercedes-Benz gained \([\d.]+% to ([\d.]+)%\)	dsh('MERCEDES-BENZ') > 0 ? csh('MERCEDES-BENZ', lastMonth().slice(0,4)) : 'did not gain'
+Lede: BMW Group	BMW Group \(([\d.]+)% to [\d.]+%\) and Porsche	csh('BMW GROUP', String(+lastMonth().slice(0,4)-1))
+Lede: BMW Group this year	BMW Group \([\d.]+% to ([\d.]+)%\) and Porsche	dsh('BMW GROUP') < 0 ? csh('BMW GROUP', lastMonth().slice(0,4)) : 'did not lose'
+Lede: Porsche	and Porsche \(([\d.]+)% to	csh('PORSCHE', String(+lastMonth().slice(0,4)-1))
+Lede: Porsche this year	and Porsche \([\d.]+% to ([\d.]+)%\) lost	dsh('PORSCHE') < 0 ? csh('PORSCHE', lastMonth().slice(0,4)) : 'did not lose'
+Image	Each car group's share of battery-electric registrations in Germany, January to September (\d{4}) and \d{4}	String(+lastMonth().slice(0,4)-1)
+Image second year	January to September \d{4} and (\d{4})\]	lastMonth().slice(0,4)
+Self-registrations: heading	\*\*Self-registrations do not change the result\.\*\*	robustHolds()
+Self-registrations: VW last year	leaves VW Group at ([\d.]+)% →	rob('VW GROUP', String(+lastMonth().slice(0,4)-1))
+Self-registrations: VW this year	VW Group at [\d.]+% → ([\d.]+)%;	rob('VW GROUP', lastMonth().slice(0,4))
+Self-registrations: worst case removed	would take out ([\d,]+) cars,	selfAll()
+Self-registrations: ratio	cars, ([\d.]+) times the	selfAll() / selfBev()
+Self-registrations: KBA count	times the ([\d,]+) electric self-registrations KBA counts	selfBev()
+Noise	Every named change is larger than month-to-month noise\.	noiseOk(['VW GROUP','TESLA','CHINESE BRANDS','STELLANTIS','MERCEDES-BENZ','BMW GROUP','PORSCHE'])
+Leapmotor: heading	\*\*Who gained most depends on one classification\.\*\*	dsh('STELLANTIS INCL. LEAPMOTOR') > Math.max(...units('gain', 20).filter(u => !['STELLANTIS','CHINESE BRANDS'].includes(u)).map(u => dsh(u))) ? '' : 'claim false'
+Chinese brands count	"Chinese brands" are the (\d+) brands of carmakers headquartered in China	groupSize('CHINESE BRANDS')
+Leapmotor JV share (quoted in SOURCES.md)	Stellantis sells its cars in Germany through a 51% joint venture
+Leapmotor: Stellantis gain	counted under Stellantis, Stellantis gains ([\d.]+) points	dsh('STELLANTIS INCL. LEAPMOTOR')
+Leapmotor: Chinese gain	points and Chinese brands ([\d.]+)\.	dsh('CHINESE BRANDS EXCL. LEAPMOTOR')
+VW: cars added	\*\*VW Group\*\* added ([\d,]+) electric cars	cun('VW GROUP',lastMonth().slice(0,4)) - cun('VW GROUP',String(+lastMonth().slice(0,4)-1))
+VW: growth	electric cars \(\+(\d+)%\) but lost	100 * (cun('VW GROUP',lastMonth().slice(0,4)) / cun('VW GROUP',String(+lastMonth().slice(0,4)-1)) - 1)
+VW: points lost	but lost ([\d.]+) points, because the market grew	-dsh('VW GROUP')
+VW: market growth	because the market grew (\d+)%; it has cut	growth('MARKET', lastMonth().slice(0,4))
+VW: forecast (quoted in SOURCES.md)	it has cut its 2026 forecast to an operating return on sales of "up to 1 percent"
+BMW Group: growth	\*\*BMW Group\*\* grew (\d+)% against the market's	100 * (cun('BMW GROUP',lastMonth().slice(0,4)) / cun('BMW GROUP',String(+lastMonth().slice(0,4)-1)) - 1)
+BMW Group: market	against the market's (\d+)%, mostly in the X1 and X3 series	mdelta(['BMW','MINI']).slice(0,2).map(r => r[0]).sort().join() === 'X1,X3' ? growth('MARKET', lastMonth().slice(0,4)) : 'X1 and X3 are not the largest'
+BMW Group: guidance (quoted in SOURCES.md)	with margin guidance cut to 1–3%
+Mercedes: only gainer, two launches	is the only premium maker that gained share, on two launches \(CLA and the electric GLC\) while its older electric models fell	dsh('MERCEDES-BENZ') > 0 && dsh('BMW GROUP') < 0 && dsh('PORSCHE') < 0 && mdelta('MERCEDES')[0][0] === 'CLA-KLASSE' && mdelta('MERCEDES')[1][0] === 'GLK, GLC' && mdelta('MERCEDES').at(-1)[1] < 0 ? '' : 'claim false'
+Porsche: growth	\*\*Porsche\*\* grew (\d+)% and had the steepest margin fall	['BMW','MERCEDES'].every(c => irv(c,'2023','auto_margin') - irv(c,'2025','auto_margin') < irv('PORSCHE','2023','auto_margin') - irv('PORSCHE','2025','auto_margin')) ? growth('PORSCHE', lastMonth().slice(0,4)) : 'not the steepest fall'
+Porsche: H1 2026 automotive	return on sales was ([\d.]+)% in the first half of 2026	irv('PORSCHE','H1-2026','auto_margin')
+Porsche: H1 2025	in the first half of 2026 \(([\d.]+)% a year earlier\)	irv('PORSCHE','H1-2025','auto_margin')
+Porsche: group targets (quoted in SOURCES.md)	its \*group\* targets are a different base \(5\.5–7\.5% for 2026, 10–15% medium term\)	fact('por_cmd_target') === '10–15%' ? '' : 'target changed'
+Watch-list: dates and metrics (each quoted in SOURCES.md)	27 October 2026 \| Porsche third-quarter statement \| Automotive return on sales against 8\.0% in the first half \| \| 28 October 2026 \| Mercedes-Benz third-quarter report \| Electric sales and adjusted return on sales against the 3–5% guidance \| \| 29 October 2026 \| Volkswagen nine-month report \| Margin against the forecast of up to 1% \| \| 4 November 2026 \| BMW third-quarter statement \| Automotive margin against the 1–3% guidance \| \| 6 November 2026 \| KBA FZ10 for October 2026 \| Whether VW Group's share is above ([\d.]+)%	csh('VW GROUP', lastMonth().slice(0,4))
+Made: tools	model Claude Opus 5\.5, October 2026\); Node
+Method: months	model series \(FZ10, (\d+) monthly files\)	monthCount()
+Made: node	Node 24 runs the pipeline
+Limits: bonus year	moved in the same months as the (\d{4}) bonus	lastMonth().slice(0,4)
+Licence	dl-de/by-2-0
+VW: Western Europe fell less than Germany	its share of Western Europe's electric market fell less	(qsh('VW GROUP INCL. PORSCHE', String(+lastMonth().slice(0,4)-1), '01', '06') - qsh('VW GROUP INCL. PORSCHE', lastMonth().slice(0,4), '01', '06')) > (ctx('vw_we_bev_share_h1_2025') - ctx('vw_we_bev_share_h1_2026')) ? '' : 'claim false'
+VW: Western Europe H1 last year (VW count)	electric market fell less, from ([\d.]+)% to	ctx('vw_we_bev_share_h1_2025')
+VW: Western Europe H1 this year (VW count)	fell less, from [\d.]+% to ([\d.]+)% in January–June	ctx('vw_we_bev_share_h1_2026')
+VW: Germany H1 last year incl. Porsche	against ([\d.]+)% to [\d.]+% in Germany counting Porsche	qsh('VW GROUP INCL. PORSCHE', String(+lastMonth().slice(0,4)-1), '01', '06')
+VW: Germany H1 this year incl. Porsche	against [\d.]+% to ([\d.]+)% in Germany counting Porsche	qsh('VW GROUP INCL. PORSCHE', lastMonth().slice(0,4), '01', '06')
